@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
 
@@ -6,8 +7,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // express setup
-const app = express();
 const port = 3000;
+const app = express();
+app.use(cors());
+app.use(express.json());
 
 // database connection setup
 const conn = mysql.createConnection({
@@ -17,12 +20,41 @@ const conn = mysql.createConnection({
   database: process.env.DB_DATABASE,
 });
 
+function printResults(err, results) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(results);
+  }
+}
+
+// setup express routes
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.get('/test', (req, res) => {
-  res.send('You have reached Test!');
+app.get('/get-items', (req, res) => {
+  conn.query('SELECT * FROM item', (err, results) => {
+    printResults(err, results);
+    if (err) {
+      res.send(err);
+    } else {
+      let output = { items: results };
+      res.send(output);
+    }
+  });
+});
+
+app.post('/add-item', (req, res) => {
+  console.log(req.body.name);
+  conn.query('INSERT INTO item (item_name) VALUES (?)', [[req.body.name]], printResults);
+  res.end();
+});
+
+app.get('/reset-items', (req, res) => {
+  conn.query('DROP TABLE IF EXISTS item', printResults);
+  conn.query('CREATE TABLE item(id INT AUTO_INCREMENT PRIMARY KEY, item_name VARCHAR(50) NOT NULL)', printResults);
+  res.end();
 });
 
 app.listen(port, () => {
