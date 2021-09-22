@@ -1,0 +1,27 @@
+{
+  "name": "unity-cloud-inventory-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JadenBalogh/unity-cloud-inventory-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JadenBalogh/unity-cloud-inventory-server/issues"
+  },
+  "homepage": "https://github.com/JadenBalogh/unity-cloud-inventory-server#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
