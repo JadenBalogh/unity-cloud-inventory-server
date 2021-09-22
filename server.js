@@ -13,12 +13,14 @@ app.use(cors());
 app.use(express.json());
 
 // database connection setup
-const conn = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_DATABASE,
-});
+function getPool() {
+  return mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_DATABASE,
+  });
+}
 
 function printResults(err, results) {
   if (err) {
@@ -34,6 +36,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/get-items', (req, res) => {
+  let conn = getPool();
   conn.query('SELECT * FROM item', (err, results) => {
     printResults(err, results);
     if (err) {
@@ -46,12 +49,13 @@ app.get('/get-items', (req, res) => {
 });
 
 app.post('/add-item', (req, res) => {
-  console.log(req.body.name);
+  let conn = getPool();
   conn.query('INSERT INTO item (item_name) VALUES (?)', [[req.body.name]], printResults);
   res.end();
 });
 
 app.get('/reset-items', (req, res) => {
+  let conn = getPool();
   conn.query('DROP TABLE IF EXISTS item', printResults);
   conn.query('CREATE TABLE item(id INT AUTO_INCREMENT PRIMARY KEY, item_name VARCHAR(50) NOT NULL)', printResults);
   res.end();
