@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // express setup
-const port = 3000;
+const port = process.env.PORT;
 const app = express();
 app.use(cors());
 app.use(express.json());
