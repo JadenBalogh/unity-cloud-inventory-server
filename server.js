@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/get-items', (req, res) => {
-  getPool().query('SELECT * FROM item', (err, results) => {
+  getPool().query('SELECT * FROM item WHERE player_id = (?)', [[req.query.playerId]], (err, results) => {
     printResults(err, results);
     if (err) {
       res.send(err);
@@ -48,13 +48,22 @@ app.get('/get-items', (req, res) => {
 });
 
 app.post('/add-item', (req, res) => {
-  getPool().query('INSERT INTO item (item_name) VALUES (?)', [[req.body.name]], printResults);
+  let playerId = req.query.playerId;
+  let itemName = req.body.name;
+  getPool().query('INSERT INTO item (player_id, item_name) VALUES (?, ?)', [playerId, itemName], printResults);
   res.end();
 });
 
 app.get('/reset-items', (req, res) => {
   getPool().query('DROP TABLE IF EXISTS item', printResults);
-  getPool().query('CREATE TABLE item(id INT AUTO_INCREMENT PRIMARY KEY, item_name VARCHAR(50) NOT NULL)', printResults);
+  getPool().query(
+    `CREATE TABLE item(
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      player_id INT NOT NULL,
+      item_name VARCHAR(50) NOT NULL
+    )`,
+    printResults
+  );
   res.end();
 });
 
