@@ -50,7 +50,12 @@ app.get('/get-items', (req, res) => {
 app.post('/add-item', (req, res) => {
   let playerId = req.query.playerId;
   let itemName = req.body.name;
-  getPool().query('INSERT INTO item (player_id, item_name) VALUES (?, ?)', [playerId, itemName], printResults);
+  let itemData = req.body.data;
+  getPool().query(
+    'INSERT INTO item (player_id, item_name, item_data) VALUES (?, ?, ?)',
+    [playerId, itemName, itemData],
+    printResults
+  );
   res.end();
 });
 
@@ -60,7 +65,8 @@ app.get('/reset-items', (req, res) => {
     `CREATE TABLE item(
       id INT AUTO_INCREMENT PRIMARY KEY,
       player_id INT NOT NULL,
-      item_name VARCHAR(50) NOT NULL
+      item_name VARCHAR(50) NOT NULL,
+      item_data TEXT
     )`,
     printResults
   );
