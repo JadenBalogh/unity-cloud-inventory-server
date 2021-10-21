@@ -115,14 +115,14 @@ app.post('/update-item', (req, res) => {
   let itemType = req.body.type;
   let itemData = req.body.data;
   getPool().query(
-    'UPDATE item SET player_id = ?, item_name = ?, item_type = ?, item_data = ? WHERE id = ? AND LAST_INSERT_ID(id)',
+    'UPDATE item SET player_id = ?, item_name = ?, item_type = ?, item_data = ? WHERE id = ?',
     [playerId, itemName, itemType, itemData, itemId],
     (err, results) => {
       printResults(err, results);
       if (err) {
         res.send(err);
       } else {
-        getPool().query('SELECT * FROM item WHERE id = LAST_INSERT_ID()', (err, results) => {
+        getPool().query('SELECT * FROM item WHERE id = ?', [[req.query.itemId]], (err, results) => {
           printResults(err, results);
           if (err) {
             res.send(err);
