@@ -81,7 +81,7 @@ app.get('/get-items-by-type', (req, res) => {
 });
 
 app.post('/add-item', (req, res) => {
-  let playerId = req.query.playerId;
+  let playerId = req.body.playerId;
   let itemName = req.body.name;
   let itemType = req.body.type;
   let itemData = req.body.data;
