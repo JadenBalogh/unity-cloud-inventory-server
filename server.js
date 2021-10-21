@@ -99,7 +99,7 @@ app.post('/add-item', (req, res) => {
   );
 });
 
-app.post('/remove-item', (req, res) => {
+app.get('/remove-item', (req, res) => {
   getPool().query('DELETE FROM item WHERE id = ?', [req.query.itemId], (err, results) => {
     printResults(err, results);
     if (err) {
@@ -110,7 +110,7 @@ app.post('/remove-item', (req, res) => {
   });
 });
 
-app.post('/trade-item', (req, res) => {
+app.get('/trade-item', (req, res) => {
   let itemId = req.query.itemId;
   let playerId = req.query.playerId;
   getPool().query('UPDATE item SET player_id = ? WHERE id = ?', [playerId, itemId], (err, results) => {
