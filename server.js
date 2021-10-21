@@ -93,7 +93,16 @@ app.post('/add-item', (req, res) => {
       if (err) {
         res.send(err);
       } else {
-        res.end();
+        getPool().query('SELECT * FROM item WHERE id = LAST_INSERT_ID()', (err, results) => {
+          printResults(err, results);
+          if (err) {
+            res.send(err);
+          } else {
+            let result = results.length > 0 ? results[0] : null;
+            let output = { item: result };
+            res.send(output);
+          }
+        });
       }
     }
   );
@@ -106,14 +115,23 @@ app.post('/update-item', (req, res) => {
   let itemType = req.body.type;
   let itemData = req.body.data;
   getPool().query(
-    'UPDATE item SET player_id = ?, item_name = ?, item_type = ?, item_data = ? WHERE id = ?',
+    'UPDATE item SET player_id = ?, item_name = ?, item_type = ?, item_data = ? WHERE id = ? AND LAST_INSERT_ID(id)',
     [playerId, itemName, itemType, itemData, itemId],
     (err, results) => {
       printResults(err, results);
       if (err) {
         res.send(err);
       } else {
-        res.end();
+        getPool().query('SELECT * FROM item WHERE id = LAST_INSERT_ID()', (err, results) => {
+          printResults(err, results);
+          if (err) {
+            res.send(err);
+          } else {
+            let result = results.length > 0 ? results[0] : null;
+            let output = { item: result };
+            res.send(output);
+          }
+        });
       }
     }
   );
