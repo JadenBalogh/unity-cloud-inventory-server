@@ -68,7 +68,7 @@ app.get('/get-items', (req, res) => {
 
 app.get('/get-items-by-type', (req, res) => {
   let playerId = req.query.playerId;
-  let itemType = req.body.type;
+  let itemType = req.query.type;
   getPool().query('SELECT * FROM item WHERE player_id = ? AND item_type = ?', [playerId, itemType], (err, results) => {
     printResults(err, results);
     if (err) {
@@ -88,6 +88,26 @@ app.post('/add-item', (req, res) => {
   getPool().query(
     'INSERT INTO item (player_id, item_name, item_type, item_data) VALUES (?, ?, ?, ?)',
     [playerId, itemName, itemType, itemData],
+    (err, results) => {
+      printResults(err, results);
+      if (err) {
+        res.send(err);
+      } else {
+        res.end();
+      }
+    }
+  );
+});
+
+app.post('/update-item', (req, res) => {
+  let itemId = req.query.itemId;
+  let playerId = req.body.playerId;
+  let itemName = req.body.name;
+  let itemType = req.body.type;
+  let itemData = req.body.data;
+  getPool().query(
+    'UPDATE item SET player_id = ?, item_name = ?, item_type = ?, item_data = ? WHERE id = ?',
+    [playerId, itemName, itemType, itemData, itemId],
     (err, results) => {
       printResults(err, results);
       if (err) {
