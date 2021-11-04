@@ -162,18 +162,20 @@ app.get('/trade-item', (req, res) => {
 });
 
 app.get('/reset-items', (req, res) => {
-  getPool().query('DROP TABLE IF EXISTS item', printResults);
-  getPool().query(
-    `CREATE TABLE item(
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      player_id INT NOT NULL,
-      item_name VARCHAR(50) NOT NULL,
-      item_type INT NOT NULL,
-      item_data TEXT
-    )`,
-    printResults
-  );
-  res.end();
+  getPool().query('DROP TABLE IF EXISTS item', (err, results) => {
+    printResults(err, results);
+    getPool().query(
+      `CREATE TABLE item(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        player_id VARCHAR(50) NOT NULL,
+        item_name VARCHAR(50) NOT NULL,
+        item_type INT NOT NULL,
+        item_data TEXT
+      )`,
+      printResults
+    );
+    res.end();
+  });
 });
 
 app.listen(port, () => {
